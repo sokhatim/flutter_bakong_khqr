@@ -1,6 +1,6 @@
 name: flutter_bakong_khqr
 description: "This plugin use for generate Bakong KHQR for online payment in Cambodia"
-version: 0.0.1+1
+version: 0.0.1+2
 homepage:
 repository: https://github.com/sokhatim/flutter_bakong_khqr
 issue_tracker: https://github.com/sokhatim/flutter_bakong_khqr/issues

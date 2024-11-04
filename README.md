@@ -3,17 +3,17 @@
 A Flutter plugin that provides integration with the Bakong QR payment system, allowing seamless payment processing in your Flutter applications.
 
 <div align="center">
-    <img src="https://github.com/sokhatim/flutter_bakong_khqr/blob/main/assets/banner.png" alt="Screenshot" />
+    <img src="https://raw.githubusercontent.com/sokhatim/flutter_bakong_khqr/main/assets/banner.png" alt="Screenshot" />
 </div>
 
 ## Getting Started
 
 This project is a starting point for a Flutter [plug-in package](https://flutter.dev/to/develop-plugins), a specialized package that includes platform-specific implementation code for Android and iOS.
 
-## Requirements
+## Screenshot
 
 <div align="center">
-    <img src="https://github.com/sokhatim/flutter_bakong_khqr/blob/main/assets/screenshot.jpg" alt="Screenshot" />
+    <img src="https://raw.githubusercontent.com/sokhatim/flutter_bakong_khqr/main/assets/screenshot.jpg" alt="Screenshot" />
 </div>
 
 ## Requirements
@@ -29,7 +29,7 @@ This project is a starting point for a Flutter [plug-in package](https://flutter
 ### Features
 
 - Supports Bakong KHQR payment processing.
-- Supports curency Riel (៛).
+- Supports currency Riel (៛).
 - Generate KHQR for Individual and Merchant
 
 ### Suport Platform
@@ -50,7 +50,7 @@ To use this plugin, add `flutter_bakong_khqr` as a dependency in your `pubspec.y
 dependencies:
   flutter:
     sdk: flutter
-  flutter_bakong_khqr: ^0.0.1
+  flutter_bakong_khqr: ^0.0.1+2
 ```
 
 
