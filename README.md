@@ -3,7 +3,7 @@
 A Flutter plugin that provides integration with the Bakong QR payment system, allowing seamless payment processing in your Flutter applications.
 
 <div align="center">
-    <img src="assets/banner.png" alt="Screenshot" />
+    <img src="https://github.com/sokhatim/flutter_bakong_khqr/blob/main/assets/banner.png" alt="Screenshot" />
 </div>
 
 ## Getting Started
@@ -13,7 +13,7 @@ This project is a starting point for a Flutter [plug-in package](https://flutter
 ## Requirements
 
 <div align="center">
-    <img src="assets/screenshot.jpg" alt="Screenshot" />
+    <img src="https://github.com/sokhatim/flutter_bakong_khqr/blob/main/assets/screenshot.jpg" alt="Screenshot" />
 </div>
 
 ## Requirements
