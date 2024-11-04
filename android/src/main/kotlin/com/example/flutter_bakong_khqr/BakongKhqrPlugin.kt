@@ -15,7 +15,7 @@ import kh.gov.nbc.bakong_khqr.model.MerchantInfo
 import kh.gov.nbc.bakong_khqr.model.SourceInfo
 
 /** FlutterBakongKhqrPlugin */
-class FlutterBakongKhqrPlugin: FlutterPlugin, MethodCallHandler {
+class BakongKhqrPlugin: FlutterPlugin, MethodCallHandler {
   /// The MethodChannel that will the communication between Flutter and native Android
   ///
   /// This local reference serves to register the plugin with the Flutter Engine and unregister it

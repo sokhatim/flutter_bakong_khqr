@@ -48,9 +48,7 @@ To use this plugin, add `flutter_bakong_khqr` as a dependency in your `pubspec.y
 
 ```yaml
 dependencies:
-  flutter:
-    sdk: flutter
-  flutter_bakong_khqr: ^0.0.1+2
+  flutter_bakong_khqr: ^0.0.1+3
 ```
 
 
