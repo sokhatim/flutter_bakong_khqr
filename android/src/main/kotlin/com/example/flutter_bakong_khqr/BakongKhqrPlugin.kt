@@ -33,6 +33,7 @@ class BakongKhqrPlugin: FlutterPlugin, MethodCallHandler {
         // Extract parameters from the MethodCall
         val bakongAccountId: String? = call.argument("bakongAccountId")
         val accountInformation: String? = call.argument("accountInformation")
+        val currency: String? = call.argument("currency")
         val acquiringBank: String? = call.argument("acquiringBank")
         val amount: Double? = call.argument("amount")
         val merchantName: String? = call.argument("merchantName")
@@ -52,7 +53,7 @@ class BakongKhqrPlugin: FlutterPlugin, MethodCallHandler {
                   this.bakongAccountId = bakongAccountId
                   this.accountInformation = accountInformation
                   this.acquiringBank = acquiringBank
-                  this.currency = KHQRCurrency.KHR
+                  this.currency = if (currency == "KHR") KHQRCurrency.KHR else KHQRCurrency.USD
                   this.amount = amount
                   this.merchantName = merchantName
                   this.merchantCity = merchantCity
@@ -69,7 +70,7 @@ class BakongKhqrPlugin: FlutterPlugin, MethodCallHandler {
 
         // Generate KHQR
         val response: KHQRResponse<KHQRData> = BakongKHQR.generateIndividual(individualInfo)
-
+        
         // Check response status and return QR data
         if (response.khqrStatus.code == 0) {
           val qrCode = response.data.qr
@@ -78,13 +79,14 @@ class BakongKhqrPlugin: FlutterPlugin, MethodCallHandler {
           val responseMap: Map<String, Any?> = mapOf("qrCode" to qrCode, "md5" to md5Hash)
           result.success(responseMap) // Send the map as a success response
         } else {
-          result.error("GENERATION_ERROR", "Failed to generate KHQR", null)
+          result.error("GENERATION_ERROR", "Failed to generate KHQR", response)
         }
       }
       "generateKhqrMerchant" -> {
         val bakongAccountId: String? = call.argument("bakongAccountId")
         val merchantId: String? = call.argument("merchantId")
         val acquiringBank: String? = call.argument("acquiringBank")
+        val currency: String? = call.argument("currency")
         val amount: Double? = call.argument("amount")
         val merchantName: String? = call.argument("merchantName")
         val merchantCity: String? = call.argument("merchantCity")
@@ -103,7 +105,7 @@ class BakongKhqrPlugin: FlutterPlugin, MethodCallHandler {
                   this.bakongAccountId = bakongAccountId
                   this.merchantId = merchantId
                   this.acquiringBank = acquiringBank
-                  this.currency = KHQRCurrency.KHR
+                  this.currency = if (currency == "KHR") KHQRCurrency.KHR else KHQRCurrency.USD
                   this.amount = amount
                   this.merchantName = merchantName
                   this.merchantCity = merchantCity

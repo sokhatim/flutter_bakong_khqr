@@ -1,20 +1,18 @@
-# flutter_bakong_khqr
-
-A Flutter plugin that provides integration with the Bakong QR payment system, allowing seamless payment processing in your Flutter applications.
-
 <div align="center">
-    <img src="https://raw.githubusercontent.com/sokhatim/flutter_bakong_khqr/main/assets/banner.png" alt="Screenshot" />
+  <h1 align="start" style="font-size: 50px;">Flutter Bakong KHQR</h1>
 </div>
 
-## Getting Started
-
-This project is a starting point for a Flutter [plug-in package](https://flutter.dev/to/develop-plugins), a specialized package that includes platform-specific implementation code for Android and iOS.
-
-## Screenshot
-
 <div align="center">
-    <img src="https://raw.githubusercontent.com/sokhatim/flutter_bakong_khqr/main/assets/screenshot.jpg" alt="Screenshot" />
+<p align="center">
+Simplify your life with Cambodia's only all-in-one mobile payment and banking app. Bakong redefines mobile payment and banking by combining e-wallets, mobile payments, online banking and financial applications within one easy-to-use interface for any preferred bank account. Stop switching between apps today and enjoy unrivalled simplicity, convenience and security with Bakong.
+</p>
 </div>
+
+---
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/sokhatim/flutter_bakong_khqr/refs/heads/master/assets/flutter_bankong_khqr_view.jpg" width="640" alt="flutter bankong khqr view"/>
+</p>
 
 ## Requirements
 
@@ -25,79 +23,76 @@ This project is a starting point for a Flutter [plug-in package](https://flutter
 - Android Gradle Plugin >= 8.3.0
 - Gradle wrapper >= 8.4
 
+## Supported Platforms
+- [x] Android
 
-### Features
+## Features Supported
 
-- Supports Bakong KHQR payment processing.
-- Supports currency Riel (៛).
-- Generate KHQR for Individual and Merchant
+See the example app for detailed implementation information.
 
-### Suport Platform
-
-- Android   | ✅
-- iOS       | ❌
-- MacOS     | ❌
-- Web       | ❌
-- Linux     | ❌
-- Windows   | ❌
+| Features            | Android | iOS     |
+|---------------------|---------|---------|
+| Generate Individual |    ✔    |    x    |
+| Generate Merchant   |    ✔    |    x    |
 
 
-## Installation
+## Platform specific setup
 
-To use this plugin, add `flutter_bakong_khqr` as a dependency in your `pubspec.yaml` file:
+### Android
+- No need to do anything it's working out of the box.
 
-```yaml
-dependencies:
-  flutter_bakong_khqr: ^0.0.1+3
+## Usage
+### Create instance of KHQR SDK
+```dart
+import 'package:flutter_bakong_khqr/flutter_bakong_khqr.dart';
+
+final _bakongKhqr = FlutterBakongKhqr();
+
 ```
 
-
-### Usage
-
-Function generateKhqrIndividual
-
-```bash
-
+### Generate KHQR (Individual)
+```dart
 final response = await _bakongKhqr.generateKhqrIndividual(
-      bakongAccountId: "sokha_tim@aclb",
-      accountInformation: "855979515836",
-      acquiringBank: "Dev Bank",
-      amount: 10000,
-      merchantName: "Sokha Tim",
-      merchantCity: "PHNOM PENH",
-      billNumber: "#12345",
-      mobileNumber: "85512233455",
-      storeLabel: "Coffee Shop",
-      terminalLabel: "Cashier_1",
-      upiAccountInformation: "1234567812345678ABCDEFGHIJKLMNO",
-      purposeOfTransaction: "Buy coffee",
-      merchantAlternateLanguagePreference: "km",
-      merchantNameAlternateLanguage: "Sokha",
-      merchantCityAlternateLanguage: "Phnom Penh",
-    );
-
-```
-
-Return KHQR String and MD5 String
-
-```bash
-
-setState(() {
-    print(response.qrCode);
-    print(response.md5);
-});
-
-```
-
-
-KHQR view for scan and payment
-
-```bash
-
-BakongKhqrView(
+    bakongAccountId: "sokha_tim@aclb",
+    accountInformation: "855979515836",
+    amount: 100,
+    currency: KhqrCurrency.usd,
     merchantName: "Sokha Tim",
-    qrString: _qrCode,
-    amount: '10000',
-),
+);
+```
 
+### Generate KHQR (Merchant)
+```dart
+final response = await _bakongKhqr.generateKhqrMerchant(
+    bakongAccountId: "sokha_tim@aclb",
+    merchantId: '', //your merchant id
+    acquiringBank: '', // your acquiringBank
+    amount: 100,
+    currency: KhqrCurrency.usd,
+    merchantName: "Sokha Tim",
+);
+```
+
+### Response data
+```dart
+ setState(() {
+    _qrCode = response.qrCode;
+});
+```
+
+### Decode KHQR
+```dart
+const qrCode = '00020101021129270010kimhak@dev01091234567895204599953031165802KH5906Kimhak6010Phnom Penh9917001317324625358296304B59E';
+final khqrDecodeData = await _khqrSdk.decode(qrCode);
+```
+
+### KHQR View
+```dart
+BakongKhqrView(
+    width: 350,
+    amount: 100,
+    receiverName: "Sokha Tim",
+    currency: KhqrCurrency.usd,
+    qr: _qrCode,
+)
 ```

@@ -1,36 +1,128 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bakong_khqr/core/currency_formater.dart';
+import 'package:flutter_bakong_khqr/core/khqr_curency.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class BakongKhqrView extends StatefulWidget {
+  final double width;
+  final EdgeInsets? padding;
+  final String receiverName;
+  final double amount;
+  final KhqrCurrency currency;
+  final String qr;
+  final Duration? duration;
+  final bool showEmptyAmount;
+  final bool? isDark;
+  final bool showShadow;
+  final Function()? onRetry;
   const BakongKhqrView({
     super.key,
     this.width = 300,
-    required this.merchantName,
-    required this.amount,
-    required this.qrString,
+    this.padding,
+    required this.receiverName,
+    this.amount = 0.0,
+    required this.currency,
+    required this.qr,
+    this.duration,
+    this.showEmptyAmount = true,
+    this.isDark = false,
+    this.showShadow = true,
+    this.onRetry,
   });
-
-  final double width;
-  final String merchantName;
-  final String amount;
-  final String qrString;
 
   @override
   State<BakongKhqrView> createState() => _BakongKhqrViewState();
 }
 
 class _BakongKhqrViewState extends State<BakongKhqrView> {
-  double get _aspecRatio => 20 / 29;
-  double get _height => (widget.width / _aspecRatio);
+  double get _aspectRatio => 20 / 29;
+  double get _height => widget.width / _aspectRatio;
+  double get _headerHeight => _height * 0.12;
+  double get _receiverNameFontSize => _height * 0.03;
+  double get _amountFontSize => _height * 0.065;
+  double get _currencyFontSize => _height * 0.03;
+  EdgeInsets get _qrMargin => EdgeInsets.symmetric(
+        horizontal: (_height * 0.1),
+        vertical: (_height * 0.08),
+      );
+
+  Duration? _duration;
+  int _durationCount = 0;
+  final _bakongBraveryRed = const Color.fromRGBO(225, 35, 46, 1);
+  final _ravenDarkBlack = const Color.fromRGBO(0, 0, 0, 1);
+  final _pearlWhite = const Color.fromRGBO(255, 255, 255, 1);
+  final _backgroundDark = const Color(0xff1d1d1d);
+  final _fontFamily = 'NunitoSans';
+  final _durationStream = StreamController<Duration>.broadcast();
+
+  final BoxShadow _boxShadow = BoxShadow(
+    color: const Color(0xff000000).withAlpha(10),
+    blurRadius: 16,
+    spreadRadius: 4,
+    offset: const Offset(0, 0),
+  );
+
+  Image get _usdSymbol => Image.asset(
+        'assets/khqr/dollar_currency.png',
+        package: 'flutter_bakong_khqr',
+      );
+
+  Image get _khrSymbol => Image.asset(
+        'assets/khqr/riel_currency.png',
+        package: 'flutter_bakong_khqr',
+      );
 
   @override
   void initState() {
     super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _updateDuration();
+    });
+  }
+
+  @override
+  void dispose() {
+    _durationStream.close();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final isDark = MediaQuery.platformBrightnessOf(context) == Brightness.dark;
+    Color qrBackgroundColor = isDark ? _backgroundDark : _pearlWhite;
+    Color qrTextColor = isDark ? _pearlWhite : _ravenDarkBlack;
+
+    if (widget.isDark != null) {
+      if (widget.isDark!) {
+        qrBackgroundColor = _backgroundDark;
+        qrTextColor = _pearlWhite;
+      } else {
+        qrBackgroundColor = _pearlWhite;
+        qrTextColor = _ravenDarkBlack;
+      }
+    }
+
+    final qrImageView = Stack(
+      alignment: Alignment.center,
+      children: [
+        Center(
+          child: QrImageView(
+            padding: widget.padding ?? EdgeInsets.zero,
+            data: widget.qr,
+          ),
+        ),
+        SizedBox(
+          width: _height * 0.08,
+          height: _height * 0.08,
+          child: widget.currency == KhqrCurrency.khr ? _khrSymbol : _usdSymbol,
+        ),
+      ],
+    );
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -38,131 +130,135 @@ class _BakongKhqrViewState extends State<BakongKhqrView> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            width: widget.width - 25,
+            width: widget.width,
             height: _height,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(widget.width * 0.12 * _aspecRatio),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withAlpha(20),
-                  blurRadius: widget.width * 0.16 * _aspecRatio,
-                  offset: const Offset(0, 0), // Shadow position
-                ),
-              ],
+              borderRadius: BorderRadius.circular(_height * 0.045),
+              boxShadow: widget.showShadow
+                  ? [
+                      _boxShadow
+                    ]
+                  : null,
             ),
-            clipBehavior: Clip.hardEdge,
+            clipBehavior: Clip.antiAlias,
             child: Column(
               children: [
+                //* Header
                 Container(
-                  height: _height * 0.15 * _aspecRatio,
-                  width: widget.width,
-                  color: const Color.fromRGBO(255, 35, 26, 1),
-                  padding: EdgeInsets.all(widget.width * 0.07 * _aspecRatio),
-                  child: SvgPicture.asset('packages/flutter_bakong_khqr/assets/khqr/khqr_logo.svg'),
+                  width: double.infinity,
+                  height: _headerHeight,
+                  color: _bakongBraveryRed,
+                  padding: EdgeInsets.symmetric(vertical: _height * 0.12 * 0.34),
+                  child: SvgPicture.asset(
+                    'assets/khqr/khqr_logo.svg',
+                    package: 'flutter_bakong_khqr',
+                  ),
                 ),
                 Expanded(
                   child: Container(
                     width: widget.width,
-                    color: const Color.fromRGBO(255, 35, 26, 1),
+                    color: _bakongBraveryRed,
                     child: ClipPath(
-                      clipper: QrHeaderClipper(aspecRatio: _aspecRatio),
+                      clipper: _KhqrCardHeaderClipper(aspectRatio: _aspectRatio),
                       child: Container(
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                        ),
+                        color: qrBackgroundColor,
                         child: Column(
                           children: [
-                            SizedBox(
-                              height: _height * 0.05 * _aspecRatio,
-                            ),
+                            SizedBox(height: _height * 0.05),
                             Container(
                               alignment: Alignment.topLeft,
                               padding: EdgeInsets.symmetric(
-                                horizontal: widget.width * 0.1 * _aspecRatio,
+                                horizontal: _height * 0.1,
                               ),
+                              //* Receiver Name
                               child: Text(
-                                widget.merchantName,
+                                widget.receiverName,
                                 textDirection: TextDirection.ltr,
                                 textAlign: TextAlign.left,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
-                                  fontSize: 0.07 * widget.width * _aspecRatio,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w400,
+                                  fontFamily: _fontFamily,
+                                  package: 'flutter_bakong_khqr',
+                                  fontSize: _receiverNameFontSize,
+                                  color: qrTextColor,
                                 ),
                               ),
-                            ),
-                            SizedBox(
-                              height: _height * 0.005 * _aspecRatio,
                             ),
                             Container(
                               alignment: Alignment.topLeft,
                               padding: EdgeInsets.symmetric(
-                                horizontal: widget.width * 0.1 * _aspecRatio,
+                                horizontal: _height * 0.1,
                               ),
+                              //* Amount
                               child: Row(
-                                textDirection: TextDirection.ltr,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  RichText(
-                                    textDirection: TextDirection.ltr,
-                                    textAlign: TextAlign.left,
-                                    text: TextSpan(
-                                      text: widget.amount,
-                                      style: TextStyle(
-                                        fontSize: 0.15 * widget.width * _aspecRatio,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: widget.width * 0.03 * _aspecRatio,
-                                  ),
-                                  RichText(
-                                    textDirection: TextDirection.ltr,
-                                    textAlign: TextAlign.left,
-                                    text: TextSpan(
-                                      text: "KHR",
-                                      style: TextStyle(
-                                        fontSize: 0.07 * widget.width * _aspecRatio,
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w400,
-                                      ),
+                                  widget.amount > 0 || widget.showEmptyAmount
+                                      ? Text(
+                                          widget.currency == KhqrCurrency.khr
+                                              ? CurrencyFormater.rielFormatter(
+                                                  widget.amount,
+                                                  showSymbol: false,
+                                                ).toString()
+                                              : CurrencyFormater.dollarFormatter(
+                                                  widget.amount,
+                                                  showSymbol: false,
+                                                ).toString(),
+                                          style: TextStyle(
+                                            fontFamily: _fontFamily,
+                                            package: 'flutter_bakong_khqr',
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: _amountFontSize,
+                                            color: qrTextColor,
+                                          ),
+                                        )
+                                      : const Text(''),
+                                  if (widget.amount > 0 || widget.showEmptyAmount) SizedBox(width: _height * 0.02),
+                                  Text(
+                                    widget.currency.name.toUpperCase(),
+                                    style: TextStyle(
+                                      fontFamily: _fontFamily,
+                                      fontSize: _currencyFontSize,
+                                      color: qrTextColor,
                                     ),
                                   ),
                                 ],
                               ),
                             ),
-                            SizedBox(
-                              height: _height * 0.03 * _aspecRatio,
-                            ),
+                            SizedBox(height: _height * 0.04),
                             CustomPaint(
-                              painter: DashedLineHorizontalPainter(
-                                aspecRatio: _aspecRatio,
+                              painter: _DashedLineHorizontalPainter(
+                                aspectRatio: _aspectRatio,
                               ),
                               size: Size(widget.width, 1),
                             ),
+                            //* QR Image
                             Expanded(
-                              child: Column(
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.only(top: _height * 0.06 * _aspecRatio),
-                                    child: SizedBox(
-                                      width: _height * 0.78 * _aspecRatio,
-                                      height: _height * 0.78 * _aspecRatio,
-                                      child: Stack(
-                                        children: [
-                                          QrImageView(
-                                            padding: const EdgeInsets.all(0),
-                                            data: widget.qrString,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                              child: Container(
+                                margin: _qrMargin,
+                                alignment: Alignment.center,
+                                child: StreamBuilder<Duration>(
+                                  stream: _durationStream.stream,
+                                  builder: (context, snapshot) {
+                                    final data = snapshot.data;
+                                    return data == null || data.inSeconds > 0
+                                        ? qrImageView
+                                        : MouseRegion(
+                                            cursor: SystemMouseCursors.click,
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                widget.onRetry?.call();
+                                                _updateDuration();
+                                              },
+                                              child: const Icon(
+                                                Icons.restart_alt,
+                                                size: 50,
+                                              ),
+                                            ),
+                                          );
+                                  },
+                                ),
                               ),
                             ),
                           ],
@@ -174,26 +270,65 @@ class _BakongKhqrViewState extends State<BakongKhqrView> {
               ],
             ),
           ),
+          if (widget.duration != null)
+            SizedBox(
+              height: _height * 0.07 * _aspectRatio,
+            ),
+          if (widget.duration != null)
+            StreamBuilder<Duration>(
+              stream: _durationStream.stream,
+              builder: (context, snapshot) {
+                if (snapshot.data?.inSeconds == 0) {
+                  return Text(
+                    'QR was expired',
+                    style: TextStyle(color: _bakongBraveryRed),
+                  );
+                }
+                return Text(
+                  "${_duration?.inMinutes.remainder(60).toString().padLeft(1, '0')}:${_duration?.inSeconds.remainder(60).toString().padLeft(2, '0')} | QR will be expired",
+                  style: TextStyle(
+                    fontFamily: _fontFamily,
+                    color: Colors.white,
+                    fontSize: 0.07 * widget.width * _aspectRatio,
+                  ),
+                );
+              },
+            ),
         ],
       ),
     );
   }
+
+  void _updateDuration() {
+    if (widget.duration == null) return;
+    _duration = widget.duration;
+    _durationCount = 0;
+    Future.microtask(() async {
+      while (_duration!.inSeconds > 0) {
+        _duration = Duration(seconds: widget.duration!.inSeconds - _durationCount);
+        _durationStream.sink.add(_duration!);
+        await Future.delayed(const Duration(seconds: 1));
+        _durationCount += 1;
+        if (!mounted) break;
+      }
+    });
+  }
 }
 
-/// [DashedLineHorizontalPainter] help to draw dashed line
-class DashedLineHorizontalPainter extends CustomPainter {
-  DashedLineHorizontalPainter({
-    required this.aspecRatio,
-  });
+class _DashedLineHorizontalPainter extends CustomPainter {
+  _DashedLineHorizontalPainter({required this.aspectRatio});
 
-  final double aspecRatio;
+  final double aspectRatio;
 
   @override
   void paint(Canvas canvas, Size size) {
-    double dashWidth = size.width * 0.07 * aspecRatio, dashSpace = size.width * 0.04 * aspecRatio, startX = 0;
-    final paint = Paint()
-      ..color = Colors.black
-      ..strokeWidth = 1;
+    final double dashWidth = size.width * 0.03 * aspectRatio;
+    final double dashSpace = size.width * 0.02 * aspectRatio;
+    final paint = Paint();
+    paint.color = Colors.grey;
+    paint.strokeWidth = 0.5;
+    double startX = 0;
+
     while (startX < size.width) {
       canvas.drawLine(Offset(startX, 0), Offset(startX + dashWidth, 0), paint);
       startX += dashWidth + dashSpace;
@@ -204,13 +339,10 @@ class DashedLineHorizontalPainter extends CustomPainter {
   bool shouldRepaint(CustomPainter oldDelegate) => false;
 }
 
-/// [QrHeaderClipper] help to clip header
-class QrHeaderClipper extends CustomClipper<Path> {
-  QrHeaderClipper({
-    required this.aspecRatio,
-  });
+class _KhqrCardHeaderClipper extends CustomClipper<Path> {
+  _KhqrCardHeaderClipper({required this.aspectRatio});
 
-  final double aspecRatio;
+  final double aspectRatio;
 
   @override
   Path getClip(Size size) {
@@ -218,12 +350,11 @@ class QrHeaderClipper extends CustomClipper<Path> {
     final width = size.width;
     final height = size.height;
 
-    path.lineTo(width - width * 0.13 * aspecRatio, 0);
-    path.lineTo(width, height * 0.1 * aspecRatio);
+    path.lineTo(width - (width * 0.14 * aspectRatio), 0);
+    path.lineTo(width, height * 0.11 * aspectRatio);
     path.lineTo(height, 0);
     path.lineTo(width, height);
     path.lineTo(0, height);
-
     return path;
   }
 

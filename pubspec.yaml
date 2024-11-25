@@ -1,9 +1,19 @@
 name: flutter_bakong_khqr
 description: "This plugin use for generate Bakong KHQR for online payment in Cambodia"
-version: 0.0.1+3
+version: 0.0.2
 homepage:
 repository: https://github.com/sokhatim/flutter_bakong_khqr
 issue_tracker: https://github.com/sokhatim/flutter_bakong_khqr/issues
+
+screenshots:
+  - description: "Flutter Bakong KHQR"
+    path: assets/flutter_bakong_khqr_logo.jpg
+
+topics:
+  - bakong
+  - khqr
+  - bakong-khqr
+  - bakong-khqr-code
 
 environment:
   sdk: ^3.5.3
@@ -15,6 +25,7 @@ dependencies:
   plugin_platform_interface: ^2.0.2
   qr_flutter: ^4.1.0
   flutter_svg: ^2.0.11
+  money2: ^5.4.0
 
 dev_dependencies:
   flutter_test:
@@ -28,28 +39,13 @@ flutter:
         package: com.example.flutter_bakong_khqr
         pluginClass: BakongKhqrPlugin
 
-  # To add assets to your plugin package, add an assets section, like this:
   assets:
     - assets/khqr/
-  #   - images/a_dot_ham.jpeg
-  #
-  # For details regarding assets in packages, see
-  # https://flutter.dev/to/asset-from-package
-  #
-  # An image asset can refer to one or more resolution-specific "variants", see
-  # https://flutter.dev/to/resolution-aware-images
-  # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
-  #   - family: Trajan Pro
-  #     fonts:
-  #       - asset: fonts/TrajanPro.ttf
-  #       - asset: fonts/TrajanPro_Bold.ttf
-  #         weight: 700
-  #
-  # For details regarding fonts in packages, see
-  # https://flutter.dev/to/font-from-package
+  
+  fonts:
+    - family: NunitoSans
+      fonts:
+        - asset: assets/fonts/NunitoSans_7pt-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/NunitoSans_7pt-Bold.ttf
+          weight: 700

@@ -1,11 +1,13 @@
+import 'package:flutter_bakong_khqr/core/khqr_curency.dart';
 import 'package:flutter_bakong_khqr/model/bakong_khqr_model.dart';
-import 'flutter_bakong_khqr_platform_interface.dart';
+import 'src/flutter_bakong_khqr_platform_interface.dart';
 
 class FlutterBakongKhqr {
   Future<BakongKhqrModel> generateKhqrIndividual({
     required String bakongAccountId,
     String? accountInformation,
     String? acquiringBank,
+    KhqrCurrency? currency,
     double? amount,
     required String merchantName,
     String? merchantCity,
@@ -23,6 +25,7 @@ class FlutterBakongKhqr {
       bakongAccountId: bakongAccountId,
       accountInformation: accountInformation,
       acquiringBank: acquiringBank,
+      currency: currency!.name.toUpperCase(),
       amount: amount,
       merchantName: merchantName,
       merchantCity: merchantCity,
@@ -42,26 +45,28 @@ class FlutterBakongKhqr {
     required String bakongAccountId,
     required String merchantId,
     required String acquiringBank,
-    required double amount,
+    KhqrCurrency? currency,
+    double? amount,
     required String merchantName,
-    required String merchantCity,
-    required String billNumber,
-    required String mobileNumber,
-    required String storeLabel,
-    required String terminalLabel,
-    required String upiAccountInformation,
-    required String purposeOfTransaction,
-    required String merchantAlternateLanguagePreference,
-    required String merchantNameAlternateLanguage,
-    required String merchantCityAlternateLanguage,
+    String? merchantCity,
+    String? billNumber,
+    String? mobileNumber,
+    String? storeLabel,
+    String? terminalLabel,
+    String? upiAccountInformation,
+    String? purposeOfTransaction,
+    String? merchantAlternateLanguagePreference,
+    String? merchantNameAlternateLanguage,
+    String? merchantCityAlternateLanguage,
   }) async {
     return FlutterBakongKhqrPlatform.instance.generateKhqrMerchant(
       bakongAccountId: bakongAccountId,
       merchantId: merchantId,
       acquiringBank: acquiringBank,
+      currency: currency!.name.toUpperCase(),
       amount: amount,
       merchantName: merchantName,
-      merchantCity: merchantCity,
+      merchantCity: merchantCity!,
       billNumber: billNumber,
       mobileNumber: mobileNumber,
       storeLabel: storeLabel,
