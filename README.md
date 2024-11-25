@@ -11,7 +11,7 @@ Simplify your life with Cambodia's only all-in-one mobile payment and banking ap
 ---
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/sokhatim/flutter_bakong_khqr/refs/heads/master/assets/flutter_bankong_khqr_view.jpg" width="640" alt="flutter bankong khqr view"/>
+  <img src="https://github.com/sokhatim/flutter_bakong_khqr/blob/main/assets/flutter_bakong_khqr_view.jpg?raw=true" width="740" alt="flutter bankong khqr view"/>
 </p>
 
 ## Requirements
@@ -78,12 +78,6 @@ final response = await _bakongKhqr.generateKhqrMerchant(
  setState(() {
     _qrCode = response.qrCode;
 });
-```
-
-### Decode KHQR
-```dart
-const qrCode = '00020101021129270010kimhak@dev01091234567895204599953031165802KH5906Kimhak6010Phnom Penh9917001317324625358296304B59E';
-final khqrDecodeData = await _khqrSdk.decode(qrCode);
 ```
 
 ### KHQR View
