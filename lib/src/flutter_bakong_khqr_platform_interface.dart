@@ -52,7 +52,7 @@ abstract class FlutterBakongKhqrPlatform extends PlatformInterface {
     String? currency,
     double? amount,
     required String merchantName,
-    required String merchantCity,
+    String? merchantCity,
     String? billNumber,
     String? mobileNumber,
     String? storeLabel,

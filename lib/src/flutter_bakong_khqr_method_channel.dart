@@ -71,6 +71,7 @@ class MethodChannelFlutterBakongKhqr extends FlutterBakongKhqrPlatform {
   }) async {
     final result = await methodChannel.invokeMethod('generateKhqrMerchant', {
       'bakongAccountId': bakongAccountId,
+      'merchantId': merchantId,
       'acquiringBank': acquiringBank,
       'currency': currency,
       'amount': amount,

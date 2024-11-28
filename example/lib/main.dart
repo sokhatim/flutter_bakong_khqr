@@ -17,28 +17,48 @@ class FlutterBakongKhqrExample extends StatefulWidget {
 }
 
 class _FlutterBakongKhqrExampleState extends State<FlutterBakongKhqrExample> {
-  String _qrCode = '';
+  String _qrCodeMerchant = '';
+  String _qrCodeIndividual = '';
   final _bakongKhqr = FlutterBakongKhqr();
 
   @override
   void initState() {
     super.initState();
-    initPlatformState();
+    _generateKhqrIndividual();
+    _generateKhqrMerchant();
   }
 
-  Future<void> initPlatformState() async {
-    // Call generateKhqr method and expect a Map response
+  Future<void> _generateKhqrIndividual() async {
+    // Call generateKhqrIndividual method and expect a Map response
     final response = await _bakongKhqr.generateKhqrIndividual(
       bakongAccountId: "sokha_tim@aclb",
-      accountInformation: "855979515836",
-      amount: 100,
-      currency: KhqrCurrency.usd,
+      acquiringBank: "Dev Bank",
       merchantName: "Sokha Tim",
+      currency: KhqrCurrency.khr,
+      amount: 100,
     );
 
-    // Assuming response is a Map with keys 'qrCode' and 'md5'
+    // Assuming response is a Map with keys 'qrCode'
     setState(() {
-      _qrCode = response.qrCode;
+      _qrCodeIndividual = response.qrCode;
+    });
+    if (!mounted) return;
+  }
+
+  Future<void> _generateKhqrMerchant() async {
+    // Call generateKhqrMerchant method and expect a Map response
+    final response = await _bakongKhqr.generateKhqrMerchant(
+      bakongAccountId: "sokha_tim@aclb",
+      merchantId: "123456",
+      acquiringBank: "Dev Bank",
+      merchantName: "Sokha Tim",
+      currency: KhqrCurrency.khr,
+      amount: 100,
+    );
+
+    // Assuming response is a Map with keys 'qrCode'
+    setState(() {
+      _qrCodeMerchant = response.qrCode;
     });
     if (!mounted) return;
   }
@@ -57,12 +77,26 @@ class _FlutterBakongKhqrExampleState extends State<FlutterBakongKhqrExample> {
           ),
         ),
         body: Center(
-          child: BakongKhqrView(
-            width: 350,
-            amount: 100,
-            receiverName: "Sokha Tim",
-            currency: KhqrCurrency.usd,
-            qr: _qrCode,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              const Text("KHQR Individual"),
+              BakongKhqrView(
+                width: 250,
+                amount: 100,
+                receiverName: "Sokha Tim",
+                currency: KhqrCurrency.khr,
+                qr: _qrCodeIndividual,
+              ),
+              const Text("KHQR Merchant"),
+              BakongKhqrView(
+                width: 250,
+                amount: 100,
+                receiverName: "Sokha Tim",
+                currency: KhqrCurrency.khr,
+                qr: _qrCodeMerchant,
+              ),
+            ],
           ),
         ),
       ),

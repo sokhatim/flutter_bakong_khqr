@@ -129,7 +129,7 @@ class BakongKhqrPlugin: FlutterPlugin, MethodCallHandler {
           val responseMap = mapOf("qrCode" to qrCode, "md5" to md5Hash)
           result.success(responseMap)
         } else {
-          result.error("GENERATION_ERROR", "Failed to generate KHQR", null)
+          result.error("GENERATION_ERROR", "Failed to generate KHQR", response)
         }
       }
       "generateDeepLink" -> {
@@ -156,7 +156,7 @@ class BakongKhqrPlugin: FlutterPlugin, MethodCallHandler {
           val responseMap = mapOf("shortLink" to shortLink)
           result.success(responseMap)
         } else {
-          result.error("DEEP_LINK_GENERATION_ERROR", response.khqrStatus.message, null)
+          result.error("DEEP_LINK_GENERATION_ERROR", response.khqrStatus.message, response)
         }
       }
       else -> {

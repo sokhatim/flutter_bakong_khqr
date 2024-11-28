@@ -66,7 +66,7 @@ class FlutterBakongKhqr {
       currency: currency!.name.toUpperCase(),
       amount: amount,
       merchantName: merchantName,
-      merchantCity: merchantCity!,
+      merchantCity: merchantCity,
       billNumber: billNumber,
       mobileNumber: mobileNumber,
       storeLabel: storeLabel,

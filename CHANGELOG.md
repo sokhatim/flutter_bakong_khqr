@@ -19,3 +19,8 @@
 * TODO: Fix bug.
 * Add USD Currency in Bakong Khqr View.
 * Can Generate QR Code with USD Currency.
+
+## 0.0.3
+
+* TODO: Fix bug.
+* Can use with iOS platform.

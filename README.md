@@ -14,6 +14,12 @@ Simplify your life with Cambodia's only all-in-one mobile payment and banking ap
   <img src="https://github.com/sokhatim/flutter_bakong_khqr/blob/main/assets/flutter_bakong_khqr_view.jpg?raw=true" width="740" alt="flutter bankong khqr view"/>
 </p>
 
+> [!NOTE]
+> If there is any problem, you can watch the video below.
+> 
+> <small>[Click here to watch video in YouTube](https://youtu.be/OPgf9F1CEdE)
+> </small>
+
 ## Requirements
 
 - Flutter >=3.3.0
@@ -22,9 +28,12 @@ Simplify your life with Cambodia's only all-in-one mobile payment and banking ap
 - Java 17
 - Android Gradle Plugin >= 8.3.0
 - Gradle wrapper >= 8.4
+- iOS 12.0
+- Swift Version 5.0
 
 ## Supported Platforms
 - [x] Android
+- [x] iOS
 
 ## Features Supported
 
@@ -32,8 +41,8 @@ See the example app for detailed implementation information.
 
 | Features            | Android | iOS     |
 |---------------------|---------|---------|
-| Generate Individual |    ✔    |    x    |
-| Generate Merchant   |    ✔    |    x    |
+| Generate Individual |    ✔    |    ✔    |
+| Generate Merchant   |    ✔    |    ✔    |
 
 
 ## Platform specific setup
@@ -41,8 +50,24 @@ See the example app for detailed implementation information.
 ### Android
 - No need to do anything it's working out of the box.
 
+### iOS
+1. Add source to Podfile (**`ios/Podfile`**)
+
+```bash
+source "https://sambo:ycfXmxxRbyzEmozY9z6n@gitlab.nbc.gov.kh/khqr/khqr-ios-pod.git"
+```
+2. Go to **`iOS`** folder
+```bash
+cd ios
+```
+
+2. Run **`pod install`**
+```bash
+pod install
+```
+
 ## Usage
-### Create instance of KHQR SDK
+### Create instance of FlutterBakongKhqr
 ```dart
 import 'package:flutter_bakong_khqr/flutter_bakong_khqr.dart';
 
@@ -53,23 +78,23 @@ final _bakongKhqr = FlutterBakongKhqr();
 ### Generate KHQR (Individual)
 ```dart
 final response = await _bakongKhqr.generateKhqrIndividual(
-    bakongAccountId: "sokha_tim@aclb",
-    accountInformation: "855979515836",
-    amount: 100,
-    currency: KhqrCurrency.usd,
-    merchantName: "Sokha Tim",
+  bakongAccountId: "sokha_tim@aclb",
+  acquiringBank: "Dev Bank",
+  merchantName: "Sokha Tim",
+  currency: KhqrCurrency.khr,
+  amount: 100,
 );
 ```
 
 ### Generate KHQR (Merchant)
 ```dart
 final response = await _bakongKhqr.generateKhqrMerchant(
-    bakongAccountId: "sokha_tim@aclb",
-    merchantId: '', //your merchant id
-    acquiringBank: '', // your acquiringBank
-    amount: 100,
-    currency: KhqrCurrency.usd,
-    merchantName: "Sokha Tim",
+  bakongAccountId: "sokha_tim@aclb",
+  merchantId: "123456",
+  acquiringBank: "Dev Bank",
+  merchantName: "Sokha Tim",
+  currency: KhqrCurrency.khr,
+  amount: 100,
 );
 ```
 
@@ -83,10 +108,10 @@ final response = await _bakongKhqr.generateKhqrMerchant(
 ### KHQR View
 ```dart
 BakongKhqrView(
-    width: 350,
-    amount: 100,
-    receiverName: "Sokha Tim",
-    currency: KhqrCurrency.usd,
-    qr: _qrCode,
+  width: 350,
+  amount: 100,
+  receiverName: "Sokha Tim",
+  currency: KhqrCurrency.usd,
+  qr: _qrCode,
 )
 ```
